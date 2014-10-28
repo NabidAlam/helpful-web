@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140730002216) do
+ActiveRecord::Schema.define(version: 20140902205902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,8 +19,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
   enable_extension "pg_stat_statements"
   enable_extension "uuid-ossp"
 
-  create_table "accounts", id: false, force: true do |t|
-    t.uuid     "id",                          null: false
+  create_table "accounts", id: :uuid, force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -38,6 +37,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
     t.text     "signature"
     t.string   "url"
     t.string   "stripe_customer_id"
+    t.hstore   "mail_server"
   end
 
   add_index "accounts", ["billing_plan_id"], name: "index_accounts_on_billing_plan_id", using: :btree
@@ -73,8 +73,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
 
   add_index "beta_invites", ["email"], name: "index_beta_invites_on_email", unique: true, using: :btree
 
-  create_table "billing_plans", id: false, force: true do |t|
-    t.uuid     "id",                                  null: false
+  create_table "billing_plans", id: :uuid, force: true do |t|
     t.string   "slug"
     t.string   "name"
     t.string   "chargify_product_id"
@@ -95,8 +94,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
 
   add_index "canned_responses", ["key", "account_id"], name: "index_canned_responses_on_key_and_account_id", unique: true, using: :btree
 
-  create_table "conversations", id: false, force: true do |t|
-    t.uuid     "id",                         null: false
+  create_table "conversations", id: :uuid, force: true do |t|
     t.integer  "number"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -113,8 +111,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
   add_index "conversations", ["hidden"], name: "index_conversations_on_hidden", using: :btree
   add_index "conversations", ["user_id"], name: "index_conversations_on_user_id", using: :btree
 
-  create_table "memberships", id: false, force: true do |t|
-    t.uuid     "id",         null: false
+  create_table "memberships", id: :uuid, force: true do |t|
     t.uuid     "account_id", null: false
     t.uuid     "user_id",    null: false
     t.string   "role"
@@ -125,8 +122,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
   add_index "memberships", ["account_id", "user_id"], name: "index_memberships_on_account_id_and_user_id", unique: true, using: :btree
   add_index "memberships", ["user_id"], name: "index_memberships_on_user_id", using: :btree
 
-  create_table "messages", id: false, force: true do |t|
-    t.uuid     "id",              null: false
+  create_table "messages", id: :uuid, force: true do |t|
     t.uuid     "conversation_id", null: false
     t.text     "content"
     t.hstore   "data"
@@ -181,8 +177,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
-  create_table "people", id: false, force: true do |t|
-    t.uuid     "id",         null: false
+  create_table "people", id: :uuid, force: true do |t|
     t.uuid     "user_id"
     t.string   "name"
     t.string   "email"
@@ -199,8 +194,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
   add_index "people", ["twitter"], name: "index_people_on_twitter", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
-  create_table "read_receipts", id: false, force: true do |t|
-    t.uuid     "id",         null: false
+  create_table "read_receipts", id: :uuid, force: true do |t|
     t.uuid     "person_id"
     t.uuid     "message_id"
     t.datetime "created_at"
@@ -231,8 +225,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
 
   add_index "tag_events", ["conversation_id"], name: "index_tag_events_on_conversation_id", using: :btree
 
-  create_table "users", id: false, force: true do |t|
-    t.uuid     "id",                                         null: false
+  create_table "users", id: :uuid, force: true do |t|
     t.string   "email",                  default: "",        null: false
     t.string   "encrypted_password",     default: ""
     t.string   "reset_password_token"
@@ -270,8 +263,7 @@ ActiveRecord::Schema.define(version: 20140730002216) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
-  create_table "webhooks", id: false, force: true do |t|
-    t.uuid     "id",            null: false
+  create_table "webhooks", id: :uuid, force: true do |t|
     t.uuid     "account_id",    null: false
     t.string   "event",         null: false
     t.text     "body"
